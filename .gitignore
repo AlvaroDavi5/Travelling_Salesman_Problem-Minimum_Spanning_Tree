@@ -4,6 +4,7 @@ bin/
 object/
 temp/
 output/
+examples/
 *.pdf
 
 # except
