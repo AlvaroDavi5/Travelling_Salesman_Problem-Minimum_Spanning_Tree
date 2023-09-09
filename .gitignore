@@ -5,6 +5,7 @@ object/
 temp/
 output/
 examples/
+trab1
 *.pdf
 
 # except
