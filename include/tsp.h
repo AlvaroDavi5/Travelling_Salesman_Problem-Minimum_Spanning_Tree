@@ -11,19 +11,6 @@
 #define MAX_LINE_LENGTH 150
 #define MAX_CITY_DISTANCE 999999999
 
-#define Item int
-#define key(A) (A)
-#define diff(A, B) (key(A) - key(B))
-#define less(A, B) (key(A) < key(B))
-#define swap(A, B) \
-	{                \
-		Item aux = A;  \
-		A = B;         \
-		B = aux;       \
-	}
-#define posToId(POS) (key(POS) + 1)
-#define idToPos(ID) (key(ID) - 1)
-
 typedef struct city_struct city;
 typedef city *City;
 typedef struct tsp_struct TSP;

@@ -175,6 +175,7 @@ float **initCitiesDistanceMatrix(size_t n)
 
 		for (size_t j = 0; j < n; j++)
 		{
+			// T(M) = M
 			if (i == j)
 				*(*(matrix + i) + j) = 0.0;
 			else
@@ -202,6 +203,7 @@ void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp)
 
 			float xDiff = diff(rowCity->x, columnCity->x);
 			float yDiff = diff(rowCity->y, columnCity->y);
+			// H^2 = OC^2 + AC^2
 			float distance = (float)sqrt(pow(xDiff, 2) + pow(yDiff, 2));
 
 			tsp->citiesDistanceMatrix[i][j] = distance;
