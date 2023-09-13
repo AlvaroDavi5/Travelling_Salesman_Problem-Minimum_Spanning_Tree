@@ -23,7 +23,12 @@ int main(int argc, char *argv[])
 	readTSPFile(argv[1], tsp);
 	stop = clock();
 	printTimeInterval(start, stop, "Interval");
+	Graph graph = initGraph(getDimensionFromTSP(tsp));
+	createEdgesByDistanceMatrix(graph, getCitiesDistanceMatrixFromTSP(tsp), getDimensionFromTSP(tsp));
+	Graph mst = buildMST(graph);
 	destroyTSP(tsp);
+	destroyGraph(graph);
+	destroyGraph(mst);
 
 	return 0;
 }
