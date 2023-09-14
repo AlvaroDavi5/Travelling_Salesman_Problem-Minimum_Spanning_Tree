@@ -9,8 +9,9 @@ struct edge_struct
 struct graph_struct
 {
 	int verticesAmount, edgesAmount;
-	int lastSettedEdge;
+	float minCost;
 	Edge *edgesArray;
+	int lastSettedEdge;
 };
 
 struct subset_struct
@@ -19,7 +20,7 @@ struct subset_struct
 	int rank;
 };
 
-Graph initGraph(int verticesAmount)
+Graph initGraph(int verticesAmount, int edgesAmount)
 {
 	Graph newGraph = (graph *)malloc(sizeof(graph));
 
@@ -27,10 +28,12 @@ Graph initGraph(int verticesAmount)
 		return NULL;
 
 	newGraph->verticesAmount = verticesAmount;
-	int edgesAmount = (verticesAmount * (verticesAmount - 1)) / 2;
-	newGraph->edgesAmount = edgesAmount; // E = (V * (V - 1)) / 2
+	if (edgesAmount == 0)
+		edgesAmount = (verticesAmount * (verticesAmount - 1)) / 2; // E = (V * (V - 1)) / 2
+	newGraph->edgesAmount = edgesAmount;
 	newGraph->edgesArray = initEdgesArray(edgesAmount);
 	newGraph->lastSettedEdge = -1;
+	newGraph->minCost = MAX_TOUR_COST;
 
 	return newGraph;
 }
@@ -67,19 +70,19 @@ int findSet(Subset *subsets, int component)
 	return subsets[component].parent;
 }
 
-void unionSet(Subset *subsets, int x, int y)
+void unionSet(Subset *subsets, int src, int dest)
 {
-	int xroot = findSet(subsets, x);
-	int yroot = findSet(subsets, y);
+	int srcSet = findSet(subsets, src);
+	int destSet = findSet(subsets, dest);
 
-	if (subsets[xroot].rank < subsets[yroot].rank)
-		subsets[xroot].parent = yroot;
-	else if (subsets[xroot].rank > subsets[yroot].rank)
-		subsets[yroot].parent = xroot;
+	if (subsets[srcSet].rank < subsets[destSet].rank)
+		subsets[srcSet].parent = destSet;
+	else if (subsets[srcSet].rank > subsets[destSet].rank)
+		subsets[destSet].parent = srcSet;
 	else
 	{
-		subsets[yroot].parent = xroot;
-		subsets[xroot].rank++;
+		subsets[destSet].parent = srcSet;
+		subsets[srcSet].rank++;
 	}
 }
 
@@ -93,23 +96,22 @@ Graph buildMST(Graph graph) // Kruskal Algorithm
 	// creating vertices subsets
 	Subset *subSets = initSubSets(graph->verticesAmount);
 
-	// initialize MST (V - 1)
-	Graph MST = initGraph(graph->verticesAmount - 1);
-	Edge mst[graph->verticesAmount - 1];
+	// initialize MST
+	Graph MST = initGraph(graph->verticesAmount, graph->verticesAmount - 1); // E = (V - 1)
 	int mstEdges = 0;
 
 	// iterate through sorted edges
 	for (int i = 0; i < graph->edgesAmount; i++)
 	{
 		Edge currentEdge = graph->edgesArray[i];
-		int sourceSet = findSet(subSets, currentEdge->source);
-		int destinationSet = findSet(subSets, currentEdge->destination);
+		int sourceSet = findSet(subSets, idToPos(currentEdge->source));
+		int destinationSet = findSet(subSets, idToPos(currentEdge->destination));
 		float edgeWeight = currentEdge->weight;
 
-		if (sourceSet != destinationSet) // if adding this edge doesn't create a cycle
+		if (sourceSet != destinationSet) // check if the edges sets are diferent to avoid cycle
 		{
 			// add it to the MST
-			MST->edgesArray[mstEdges++] = currentEdge;
+			MST->edgesArray[mstEdges++] = createEdge(currentEdge->source, currentEdge->destination, currentEdge->weight);
 			minCost += edgeWeight;
 			// unify subsets
 			unionSet(subSets, sourceSet, destinationSet);
@@ -117,6 +119,7 @@ Graph buildMST(Graph graph) // Kruskal Algorithm
 	}
 
 	destroySubSets(subSets);
+	MST->minCost = minCost;
 
 	return MST;
 }
@@ -212,9 +215,9 @@ size_t _partition(Item *array, size_t begin, size_t end)
 	return pivotIndex;
 }
 
-size_t _random_partition(Item *array, size_t begin, size_t end)
+size_t _randomPartition(Item *array, size_t begin, size_t end)
 {
-	size_t pivotIndex = (rand() % (end - begin + 1)) + begin;
+	size_t pivotIndex = begin + (rand() % (end - begin + 1));
 
 	swap(array[pivotIndex], array[end]);
 	return _partition(array, begin, end);
@@ -224,9 +227,9 @@ void quickSort(Item *array, size_t begin, size_t end)
 {
 	if (begin < end)
 	{
-		size_t pivotIndex = _random_partition(array, begin, end);
-
-		quickSort(array, begin, pivotIndex - 1);
-		quickSort(array, pivotIndex + 1, end);
+		size_t partitionIndex = _randomPartition(array, begin, end);
+		if (partitionIndex > 0)
+			quickSort(array, begin, partitionIndex - 1);
+		quickSort(array, partitionIndex + 1, end);
 	}
 }

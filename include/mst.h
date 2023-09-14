@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include "utils.h"
 
+#define MAX_TOUR_COST 999999999
+
 typedef struct edge_struct edge;
 typedef edge *Edge;
 typedef struct graph_struct graph;
@@ -20,12 +22,12 @@ typedef struct subset_struct Subset;
 		B = aux;       \
 	}
 
-Graph initGraph(int verticesAmount);
+Graph initGraph(int verticesAmount, int edgesAmount);
 void destroyGraph(Graph graph);
 Subset *initSubSets(int verticesAmount);
 void destroySubSets(Subset *subsets);
 int findSet(Subset *subsets, int component);
-void unionSet(Subset *subsets, int x, int y);
+void unionSet(Subset *subsets, int src, int dest);
 Graph buildMST(Graph graph);
 Edge createEdge(int src, int dest, float w);
 Edge *initEdgesArray(int edgesAmount);
