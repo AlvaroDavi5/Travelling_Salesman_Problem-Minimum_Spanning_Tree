@@ -86,14 +86,14 @@ O programa é dividido nos arquivos `tsp`, `mst`, `tour` e `utils`, onde a imple
 ...
 
 ##### ADT(s)
-- `Estruturas e TADs Implementados:`  
- A escolha das estruturas de cada TAD foi feita após a análise das funcionalidades pedidas, visando facilidade, clareza e versatilidade para o programa.
-  * **TSP**: TAD contendo o nome do problema, dimensão (quantidade de cidades) e lista de cidades.
-    > _City_: TAD contendo ID e coordenadas euclidianas (x, y) de cada cidade.
-  * **Graph**: TAD utilizado para o grafo geral de cidades (aresta de uma cidade para todas as outras) e para a MST contendo quantidade de vértices, quantidade de arestas, lista de arestas e custo mínimo para percorrer todos os vértices (no caso da MST).
-    > _Edge_: TAD contendo vértice de origem, vértice de destino e peso (tamanho) de cada aresta.
-  * **Subset**: TAD contendo ID da aresta pai do conjunto e seu ranking (para definir qual será o conjunto abrangente/pai).
-  * **Tour**: TAD contendo ...
+A escolha das estruturas de cada TAD foi feita após a análise das funcionalidades pedidas, visando facilidade, clareza e versatilidade para o programa.
+
+* **TSP**: TAD contendo o nome do problema, dimensão (quantidade de cidades) e lista de cidades.
+  > _City_: TAD contendo ID e coordenadas euclidianas (x, y) de cada cidade.
+* **Graph**: TAD utilizado para o <u>grafo geral de cidades</u> (arestas de uma cidade para todas as outras) e para a `MST` contendo quantidade de vértices, quantidade de arestas, lista de arestas e custo mínimo para percorrer todos os vértices (no caso da `MST`).
+  > _Edge_: TAD contendo vértice de origem, vértice de destino e peso (tamanho) de cada aresta.
+* **Subset**: TAD contendo ID da aresta pai do conjunto e seu ranking (para definir qual será o conjunto abrangente/pai).
+* **Tour**: TAD contendo ...
 
 ### Conclusion
 ...
