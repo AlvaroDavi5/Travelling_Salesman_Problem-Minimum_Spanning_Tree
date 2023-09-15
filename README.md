@@ -23,20 +23,20 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
 - [x] Estruturas Opacas
 - [ ] Ponteiros para Funções
 - [ ] Funcionalidades
-  - [ ] TSP
+  - [x] TSP
     - [x] Leitura de arquivos '.tsp'
     - [x] Criar TAD para TSP e para as cidades
     - [x] Calcular distância de uma cidade para outra com base nas coordenadas
     - [x] Criar tabela para representar o grafo de distância entre todas as cidades
-    - [ ] Refatorar e remover passos desnecessários (acessos e alocações)
-      - [ ] Tabela de distâncias
-      - [ ] Comparações
-      - [ ] Acréscimo de arestas
+    - [x] Refatorar e remover passos desnecessários (acessos e alocações)
+      - [x] Tabela de distâncias
+      - [x] Comparações
+      - [x] Acréscimo de arestas
   - [ ] MST
     - [x] Implementar o _Algoritmo de Kruskal_ para criar MST e calcular o menor custo
     - [X] Criar TAD para MST (árvore/grafo)
     - [ ] Imprimir MST em arquivo '.mst'
-    - [ ] Refatorar e remover passos desnecessários (acessos e alocações)
+    - [x] Refatorar e remover passos desnecessários (acessos e alocações)
   - [ ] Tour
     - [ ] ...
     - [ ] Refatorar e remover passos desnecessários (acessos e alocações)

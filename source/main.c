@@ -21,14 +21,18 @@ int main(int argc, char *argv[])
 	start = clock();
 	TSP *tsp = initTSP();
 	readTSPFile(argv[1], tsp);
+
 	Graph graph = initGraph(getDimensionFromTSP(tsp), 0);
-	createEdgesByDistanceMatrix(graph, getCitiesDistanceMatrixFromTSP(tsp), getDimensionFromTSP(tsp));
+	calculateDistanceBetweenCities(tsp, graph);
+
 	Graph mst = buildMST(graph);
-	stop = clock();
-	printTimeInterval(start, stop, "Interval");
+
 	destroyTSP(tsp);
 	destroyGraph(graph);
 	destroyGraph(mst);
+	stop = clock();
+
+	printTimeInterval(start, stop, "Full Execution Interval");
 
 	return 0;
 }

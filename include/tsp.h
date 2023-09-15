@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include "utils.h"
+#include "./utils.h"
 
 #define MAX_LINE_LENGTH 150
 #define MAX_CITY_DISTANCE 999999999
@@ -21,13 +21,11 @@ void readTSPFile(char *fileName, TravellingSalesmanProblem tsp);
 void destroyTSP(TravellingSalesmanProblem tsp);
 int getDimensionFromTSP(TravellingSalesmanProblem tsp);
 City createCity(int id, float x, float y);
+int getIDFromCity(City city);
+float getXCoordinateFromCity(City city);
+float getYCoordinateFromCity(City city);
 City *initCitiesArray(size_t n);
 City *getCitiesArrayFromTSP(TravellingSalesmanProblem tsp);
 void destroyCitiesArray(City *array, size_t n);
-float **initCitiesDistanceMatrix(size_t n);
-float **getCitiesDistanceMatrixFromTSP(TravellingSalesmanProblem tsp);
-void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp);
-void destroyCitiesDistanceMatrix(float **matrix, size_t n);
-void printCitiesDistanceMatrix(float **matrix, size_t n);
 
 #endif
