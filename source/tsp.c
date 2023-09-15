@@ -10,7 +10,6 @@ struct tsp_struct
 {
 	char *name;
 	int dimension;
-	float **citiesDistanceMatrix;
 	City *citiesArray;
 };
 
@@ -23,7 +22,6 @@ TravellingSalesmanProblem initTSP()
 
 	tsp->name = (char *)malloc(MAX_LINE_LENGTH * sizeof(char));
 	tsp->dimension = 0;
-	tsp->citiesDistanceMatrix = NULL;
 	tsp->citiesArray = NULL;
 
 	return tsp;
@@ -62,7 +60,6 @@ void readTSPFile(char *fileName, TravellingSalesmanProblem tsp)
 		{
 			tsp->dimension = dimension;
 			tsp->citiesArray = initCitiesArray(tsp->dimension);
-			tsp->citiesDistanceMatrix = initCitiesDistanceMatrix(tsp->dimension);
 		}
 		else if (sscanf(line, "EDGE_WEIGHT_TYPE: %[^\n]", edgeWeightType) == 1)
 		{
@@ -77,10 +74,7 @@ void readTSPFile(char *fileName, TravellingSalesmanProblem tsp)
 			while (fgets(line, sizeof(line), file))
 			{
 				if (strcmp(line, "EOF") == 0)
-				{
-					calculateDistanceBetweenCities(tsp);
 					break;
-				}
 				else
 				{
 					int cityId = 0;
@@ -101,7 +95,6 @@ void destroyTSP(TravellingSalesmanProblem tsp)
 {
 	safeFree(tsp->name);
 	destroyCitiesArray(tsp->citiesArray, tsp->dimension);
-	destroyCitiesDistanceMatrix(tsp->citiesDistanceMatrix, tsp->dimension);
 
 	safeFree(tsp);
 }
@@ -123,6 +116,21 @@ City createCity(int id, float x, float y)
 	newCity->y = y;
 
 	return newCity;
+}
+
+int getIDFromCity(City city)
+{
+	return city->id;
+}
+
+float getXCoordinateFromCity(City city)
+{
+	return city->x;
+}
+
+float getYCoordinateFromCity(City city)
+{
+	return city->y;
 }
 
 City *initCitiesArray(size_t n)
@@ -150,95 +158,5 @@ void destroyCitiesArray(City *array, size_t n)
 		}
 
 		safeFree(array);
-	}
-}
-
-float **initCitiesDistanceMatrix(size_t n)
-{
-	if (n < 1)
-		return NULL;
-
-	float **matrix = (float **)malloc(n * sizeof(float *));
-
-	if (!wasAllocated(matrix))
-		return NULL;
-
-	for (size_t i = 0; i < n; i++)
-	{
-		*(matrix + i) = (float *)malloc(n * sizeof(float));
-
-		if (!wasAllocated(matrix + i))
-		{
-			safeFree(matrix);
-			return NULL;
-		}
-
-		for (size_t j = 0; j < n; j++)
-		{
-			// T(M) = M
-			if (i == j)
-				*(*(matrix + i) + j) = 0.0;
-			else
-				*(*(matrix + i) + j) = (float)MAX_CITY_DISTANCE;
-		}
-	}
-
-	return matrix;
-}
-
-float **getCitiesDistanceMatrixFromTSP(TravellingSalesmanProblem tsp)
-{
-	return tsp->citiesDistanceMatrix;
-}
-
-void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp)
-{
-	for (int i = 0; i < tsp->dimension; i++)
-	{
-		City rowCity = tsp->citiesArray[i];
-
-		for (int j = 0; j < tsp->dimension; j++)
-		{
-			City columnCity = tsp->citiesArray[j];
-
-			float xDiff = diff(rowCity->x, columnCity->x);
-			float yDiff = diff(rowCity->y, columnCity->y);
-			// H^2 = OC^2 + AC^2
-			float distance = (float)sqrt(pow(xDiff, 2) + pow(yDiff, 2));
-
-			tsp->citiesDistanceMatrix[i][j] = distance;
-		}
-	}
-}
-
-void destroyCitiesDistanceMatrix(float **matrix, size_t n)
-{
-	if (wasAllocated(matrix))
-	{
-		for (size_t i = 0; i < n; i++)
-		{
-			safeFree(*(matrix + i));
-		}
-
-		safeFree(matrix);
-	}
-}
-
-void printCitiesDistanceMatrix(float **matrix, size_t n)
-{
-	if (n < 1)
-		return;
-
-	for (size_t i = 0; i < n; i++)
-	{
-		for (size_t j = 0; j < n; ++j)
-		{
-			printf("%.1f", matrix[i][j]);
-
-			if (j < (n - 1))
-				printf(", ");
-		}
-
-		printf("\n");
 	}
 }

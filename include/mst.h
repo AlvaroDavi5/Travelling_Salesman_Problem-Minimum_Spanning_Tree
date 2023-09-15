@@ -4,7 +4,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "utils.h"
+#include "./tsp.h"
+#include "./utils.h"
 
 #define MAX_TOUR_COST 999999999
 
@@ -34,7 +35,7 @@ Edge *initEdgesArray(int edgesAmount);
 void appendEdgeToArray(Graph graph, Edge edge);
 Edge *getEdgesArrayFromGraph(Graph graph);
 void destroyEdgesArray(Edge *array, size_t n);
-void createEdgesByDistanceMatrix(Graph graph, float **distanceMatrix, size_t n);
+void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph);
 void quickSort(Item *array, size_t begin, size_t end);
 
 #endif

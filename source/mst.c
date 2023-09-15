@@ -176,21 +176,31 @@ void destroyEdgesArray(Edge *array, size_t n)
 	}
 }
 
-void createEdgesByDistanceMatrix(Graph graph, float **distanceMatrix, size_t n)
+void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph)
 {
-	if (!wasAllocated(graph->edgesArray))
+	int tspDimension = getDimensionFromTSP(tsp);
+	City *citiesArray = getCitiesArrayFromTSP(tsp);
+
+	if (!wasAllocated(citiesArray) || !wasAllocated(graph->edgesArray))
 		return;
 
-	for (size_t i = 0; i < n; i++)
+	for (int i = 0; i < tspDimension; i++)
 	{
-		for (size_t j = 0; j < n; j++)
+		for (int j = 0; j < tspDimension; j++)
 		{
-			if (j >= i) // ignore pivots and transposed values
+			if (j >= i) // ignore pivots (distance between a city and itself) and transposed values ​(repeated distances)
 				continue;
 			else
 			{
-				float weight = *(*(distanceMatrix + i) + j);
-				appendEdgeToArray(graph, createEdge(posToId(i), posToId(j), weight));
+				City rowCity = *(citiesArray + i);
+				City columnCity = *(citiesArray + j);
+
+				float xDiff = diff(getXCoordinateFromCity(rowCity), getXCoordinateFromCity(columnCity));
+				float yDiff = diff(getYCoordinateFromCity(rowCity), getYCoordinateFromCity(columnCity));
+				// H^2 = OC^2 + AC^2
+				float distance = (float)sqrt(pow(xDiff, 2) + pow(yDiff, 2));
+
+				appendEdgeToArray(graph, createEdge(posToId(i), posToId(j), distance));
 			}
 		}
 	}
