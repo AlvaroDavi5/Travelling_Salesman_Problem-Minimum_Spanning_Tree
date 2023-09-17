@@ -4,10 +4,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include "./tsp.h"
 #include "./utils.h"
 
-#define MAX_TOUR_COST 999999999
+#define MAX_MST_COST 999999999
 
 typedef struct edge_struct edge;
 typedef edge *Edge;

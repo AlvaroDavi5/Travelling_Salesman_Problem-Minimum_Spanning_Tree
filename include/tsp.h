@@ -4,11 +4,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 #include "./utils.h"
 
-#define MAX_LINE_LENGTH 150
 #define MAX_CITY_DISTANCE 999999999
 
 typedef struct city_struct city;

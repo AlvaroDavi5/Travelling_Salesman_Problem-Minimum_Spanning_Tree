@@ -4,9 +4,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
+#include <string.h>
 #include <time.h>
+
+#define MAX_LINE_LENGTH 150
 
 #define posToId(POS) (POS + 1)
 #define idToPos(ID) (ID - 1)

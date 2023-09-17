@@ -33,7 +33,7 @@ Graph initGraph(int verticesAmount, int edgesAmount)
 	newGraph->edgesAmount = edgesAmount;
 	newGraph->edgesArray = initEdgesArray(edgesAmount);
 	newGraph->lastSettedEdge = -1;
-	newGraph->minCost = MAX_TOUR_COST;
+	newGraph->minCost = MAX_MST_COST;
 
 	return newGraph;
 }
