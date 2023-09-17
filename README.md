@@ -23,7 +23,7 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
 - [x] Estruturas Opacas
 - [ ] Ponteiros para Funções
 - [ ] Funcionalidades
-  - [x] TSP
+  - [x] TSP (Travelling Salesman Problem)
     - [x] Leitura de arquivos '.tsp'
     - [x] Criar TAD para TSP e para as cidades
     - [x] Calcular distância de uma cidade para outra com base nas coordenadas
@@ -32,13 +32,23 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
       - [x] Tabela de distâncias
       - [x] Comparações
       - [x] Acréscimo de arestas
-  - [ ] MST
+  - [ ] MST (Minimum Spanning Tree)
     - [x] Implementar o _Algoritmo de Kruskal_ para criar MST e calcular o menor custo
     - [X] Criar TAD para MST (árvore/grafo)
     - [ ] Imprimir MST em arquivo '.mst'
     - [x] Refatorar e remover passos desnecessários (acessos e alocações)
   - [ ] Tour
-    - [ ] ...
+    - [ ] Criar TAD para armazenar Tour
+      - [ ] O TAD deve ser criado com base na MST
+      - [ ] O TAD deve conter um array para as arestas (assim como a MST)
+      - [ ] O TAD deve conter um array para os vértices já visitados (ID:boolean) e um contador
+      - [ ] O TAD deve calcular/verificar:
+        1. As ocorrências de cidades repetidas
+        1. As cidades (vértices) ao redor
+        1. A menor distância (aresta de menor peso) entre as cidades ao redor
+      - [ ] O TAD deve voltar à MST sempre que possível
+      - [ ] O TAD deve conter um custo mínimo menor que o da MST
+    - [ ] Imprimir Tour em arquivo '.tour'
     - [ ] Refatorar e remover passos desnecessários (acessos e alocações)
 - [ ] Relatório
   - [ ] Documentar complexidade dos algoritmos usados (_Big O, Big Omega, Big Theta_)
