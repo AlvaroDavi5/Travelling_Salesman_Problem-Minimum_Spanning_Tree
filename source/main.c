@@ -5,6 +5,7 @@
 #include <string.h>
 #include "../include/tsp.h"
 #include "../include/mst.h"
+#include "../include/tour.h"
 #include "../include/utils.h"
 
 int main(int argc, char *argv[])
@@ -27,9 +28,18 @@ int main(int argc, char *argv[])
 
 	Graph mst = buildMST(graph);
 
+	Tour tour = buildTour(graph, mst);
+
+	printf("Graph - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromGraph(graph), getEdgesAmountFromGraph(graph));
+	printf("MST - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromGraph(mst), getEdgesAmountFromGraph(mst));
+	printf("Tour - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromTour(tour), getEdgesAmountFromTour(tour));
+
+	printf("\n\nCusto - Graph: %.2f >= Tour: %.2f >= MST: %.2f\n", getMinCostFromGraph(graph), getMinCostFromTour(tour), getMinCostFromGraph(mst));
+
 	destroyTSP(tsp);
 	destroyGraph(graph);
 	destroyGraph(mst);
+	destroyTour(tour);
 	stop = clock();
 
 	printTimeInterval(start, stop, "Full Execution Interval");

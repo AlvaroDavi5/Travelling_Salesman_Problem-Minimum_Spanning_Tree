@@ -21,7 +21,7 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
 - [x] Gerenciamento de Memória
 - [x] Tipos Abstratos de Dados (TADs)
 - [x] Estruturas Opacas
-- [ ] Ponteiros para Funções
+- [x] Ponteiros para Funções
 - [ ] Funcionalidades
   - [x] TSP (Travelling Salesman Problem)
     - [x] Leitura de arquivos '.tsp'
@@ -47,7 +47,7 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
         1. As cidades (vértices) ao redor
         1. A menor distância (aresta de menor peso) entre as cidades ao redor
       - [ ] O TAD deve voltar à MST sempre que possível
-      - [ ] O TAD deve conter um custo mínimo menor que o da MST
+      - [ ] O TAD deve conter um custo mínimo menor que o TSP pela MST e maior que o da MST
     - [ ] Imprimir Tour em arquivo '.tour'
     - [ ] Refatorar e remover passos desnecessários (acessos e alocações)
 - [ ] Relatório
