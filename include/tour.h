@@ -17,7 +17,7 @@ Tour initTour(int verticesAmount);
 void writeTourFile(char *fileName, Tour tour);
 void destroyTour(Tour tour);
 Tour buildTour(Graph graph, Graph mst);
-bool *initVisitedVerticesArray(int verticesAmount);
+int *initVisitedVerticesArray(int verticesAmount);
 int getVerticesAmountFromTour(Tour tour);
 int getEdgesAmountFromTour(Tour tour);
 float getMinCostFromTour(Tour tour);

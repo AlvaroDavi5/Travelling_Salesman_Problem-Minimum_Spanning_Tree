@@ -6,8 +6,6 @@ struct tour_struct
 	float minCost;
 	Edge *edgesArray;
 	int lastSettedEdge;
-	bool *visitedVerticesArray;
-	int visitedVerticesCount;
 };
 
 Tour initTour(int verticesAmount)
@@ -21,8 +19,6 @@ Tour initTour(int verticesAmount)
 	newTour->edgesAmount = 0;
 	newTour->edgesArray = NULL;
 	newTour->lastSettedEdge = -1;
-	newTour->visitedVerticesArray = initVisitedVerticesArray(verticesAmount);
-	newTour->visitedVerticesCount = 0;
 	newTour->minCost = 0;
 
 	return newTour;
@@ -30,12 +26,12 @@ Tour initTour(int verticesAmount)
 
 void writeTourFile(char *fileName, Tour tour)
 {
+	// TODO
 }
 
 void destroyTour(Tour tour)
 {
 	destroyEdgesArray(tour->edgesArray, tour->edgesAmount);
-	safeFree(tour->visitedVerticesArray);
 	safeFree(tour);
 }
 
@@ -56,161 +52,117 @@ void _appendEdgeToTourArray(Tour tour, Edge edge)
 	tour->lastSettedEdge = pos;
 }
 
-int _compareEdgesSrc(const void *a, const void *b)
-{
-	const Edge edgeA = *(const Edge *)a;
-	const Edge edgeB = *(const Edge *)b;
-
-	if (getSourceFromEdge(edgeA) < getSourceFromEdge(edgeB))
-		return -1;
-	if (getSourceFromEdge(edgeA) > getSourceFromEdge(edgeB))
-		return 1;
-	return 0;
-}
-
-int _compareEdgesDest(const void *a, const void *b)
-{
-	const Edge edgeA = *(const Edge *)a;
-	const Edge edgeB = *(const Edge *)b;
-
-	if (getDestinationFromEdge(edgeA) != getSourceFromEdge(edgeB))
-		return -1;
-	if (getDestinationFromEdge(edgeA) == getSourceFromEdge(edgeB))
-		return 1;
-	return 0;
-}
-
 Tour buildTour(Graph graph, Graph mst)
 {
 	Tour newTour = initTour(getVerticesAmountFromGraph(mst));
-	// TODO: tentar com recursao
 	Edge *mstEdgesArray = getEdgesArrayFromGraph(mst);
 	Edge *generalGraphEdgesArray = getEdgesArrayFromGraph(graph);
+	int *visitedVerticesArray = initVisitedVerticesArray(getVerticesAmountFromGraph(mst));
 
+	int allVerticesOccurrencesArray[2 * getEdgesAmountFromGraph(mst)];
+	int allVerticesOccurrencesCount = 0;
 	for (int i = 0; i < getEdgesAmountFromGraph(mst); i++)
 	{
-		Edge currentMSTEdge = *(mstEdgesArray + i);
-		int mstSrcVerticeId = getSourceFromEdge(currentMSTEdge);
-		int mstDestVerticeId = getDestinationFromEdge(currentMSTEdge);
+		Edge currentMstEdge = *(mstEdgesArray + i);
+		int mstSrcVerticeId = getSourceFromEdge(currentMstEdge);
+		int mstDestVerticeId = getDestinationFromEdge(currentMstEdge);
 
-		newTour->visitedVerticesArray[idToPos(mstSrcVerticeId)] = true;
-		if (newTour->visitedVerticesArray[idToPos(mstDestVerticeId)] == false)
+		allVerticesOccurrencesArray[allVerticesOccurrencesCount++] = mstSrcVerticeId;
+		allVerticesOccurrencesArray[allVerticesOccurrencesCount++] = mstDestVerticeId;
+	}
+
+	int singleVerticesOccurrenceArray[getEdgesAmountFromGraph(mst)];
+	int singleVerticesOccurrenceCount = 0;
+	for (int i = 0; i < allVerticesOccurrencesCount; i++)
+	{
+		int verticeId = allVerticesOccurrencesArray[i];
+
+		if (visitedVerticesArray[idToPos(verticeId)] < 1)
 		{
-			_appendEdgeToTourArray(newTour, createEdge(getSourceFromEdge(currentMSTEdge),
-																								 getDestinationFromEdge(currentMSTEdge),
-																								 getWeightFromEdge(currentMSTEdge)));
-			newTour->visitedVerticesArray[idToPos(mstDestVerticeId)] = true;
-			newTour->visitedVerticesCount += 1;
-		}
-		else
-		{
-			Edge minGeneralGraphEdge = NULL;
-
-			for (int j = 0; j < getEdgesAmountFromGraph(graph); j++)
-			{
-				Edge currentGeneralGraphEdge = *(generalGraphEdgesArray + j);
-				int generalGraphSrcVerticeId = getSourceFromEdge(currentGeneralGraphEdge);
-				int generalGraphDestVerticeId = getDestinationFromEdge(currentGeneralGraphEdge);
-
-				if ((mstSrcVerticeId == generalGraphSrcVerticeId || mstSrcVerticeId == generalGraphDestVerticeId) &&
-						(mstDestVerticeId != generalGraphSrcVerticeId && mstDestVerticeId != generalGraphDestVerticeId))
-				{
-					if (minGeneralGraphEdge == NULL)
-						minGeneralGraphEdge = currentGeneralGraphEdge;
-					else if (less(getWeightFromEdge(currentGeneralGraphEdge), getWeightFromEdge(minGeneralGraphEdge))) // never changes if general graph is sorted
-						minGeneralGraphEdge = currentGeneralGraphEdge;
-				}
-			}
-
-			if (minGeneralGraphEdge != NULL)
-			{
-				int minEdgeSrcVerticeId = getSourceFromEdge(minGeneralGraphEdge);
-				int minEdgeDestVerticeId = getDestinationFromEdge(minGeneralGraphEdge);
-				int minEdgeWeight = getWeightFromEdge(minGeneralGraphEdge);
-
-				if (mstSrcVerticeId == minEdgeSrcVerticeId)
-				{
-					_appendEdgeToTourArray(newTour, createEdge(minEdgeSrcVerticeId, minEdgeDestVerticeId, minEdgeWeight));
-					newTour->visitedVerticesArray[idToPos(minEdgeDestVerticeId)] = true;
-				}
-				else
-				{
-					_appendEdgeToTourArray(newTour, createEdge(minEdgeDestVerticeId, minEdgeSrcVerticeId, minEdgeWeight));
-					newTour->visitedVerticesArray[idToPos(minEdgeSrcVerticeId)] = true;
-				}
-				newTour->visitedVerticesCount += 1;
-			}
+			singleVerticesOccurrenceArray[singleVerticesOccurrenceCount++] = verticeId;
+			visitedVerticesArray[idToPos(verticeId)] += 1;
 		}
 	}
 
-	qsort(newTour->edgesArray, newTour->edgesAmount, sizeof(Edge), _compareEdgesSrc);
-	qsort(newTour->edgesArray, newTour->edgesAmount, sizeof(Edge), _compareEdgesDest);
-
-	int firstSrcVerticeId = getSourceFromEdge(newTour->edgesArray[0]);
-	int lastSrcVerticeId = getSourceFromEdge(newTour->edgesArray[newTour->edgesAmount - 1]);
-	if (firstSrcVerticeId != lastSrcVerticeId)
+	// TODO - melhorar algoritmo para obter custo minimo
+	for (int i = 0; i < getEdgesAmountFromGraph(mst); i++)
 	{
-		Edge minGeneralGraphEdge = NULL;
+		int v1 = singleVerticesOccurrenceArray[i];
+		int v2 = singleVerticesOccurrenceArray[i + 1];
+		Edge minEdge = NULL;
+		bool isInverted = false;
 
-		for (int i = 0; i < getEdgesAmountFromGraph(graph); i++)
+		for (int j = 0; j < getEdgesAmountFromGraph(mst); j++)
 		{
-			Edge currentGeneralGraphEdge = *(generalGraphEdgesArray + i);
-			int generalGraphSrcVerticeId = getSourceFromEdge(currentGeneralGraphEdge);
-			int generalGraphDestVerticeId = getDestinationFromEdge(currentGeneralGraphEdge);
+			Edge currentMstEdge = *(mstEdgesArray + j);
+			int mstSrcVerticeId = getSourceFromEdge(currentMstEdge);
+			int mstDestVerticeId = getDestinationFromEdge(currentMstEdge);
 
-			if ((generalGraphSrcVerticeId == lastSrcVerticeId && generalGraphDestVerticeId == firstSrcVerticeId) ||
-					(generalGraphDestVerticeId == lastSrcVerticeId && generalGraphSrcVerticeId == firstSrcVerticeId))
+			if ((v1 == mstSrcVerticeId && v2 == mstDestVerticeId) ||
+					(v2 == mstSrcVerticeId && v1 == mstDestVerticeId))
 			{
-				if (minGeneralGraphEdge == NULL)
-					minGeneralGraphEdge = currentGeneralGraphEdge;
-				else if (less(getWeightFromEdge(currentGeneralGraphEdge), getWeightFromEdge(minGeneralGraphEdge))) // never changes if general graph is sorted
-					minGeneralGraphEdge = currentGeneralGraphEdge;
+				if (v2 == mstSrcVerticeId && v1 == mstDestVerticeId)
+					isInverted = true;
+
+				minEdge = currentMstEdge;
+			}
+		}
+		if (minEdge == NULL)
+		{
+			for (int k = 0; k < getEdgesAmountFromGraph(graph); k++)
+			{
+				Edge currentGeneralGraphEdge = *(generalGraphEdgesArray + k);
+				int generalGraphSrcVerticeId = getSourceFromEdge(currentGeneralGraphEdge);
+				int generalGraphDestVerticeId = getDestinationFromEdge(currentGeneralGraphEdge);
+
+				if ((v1 == generalGraphSrcVerticeId && v2 == generalGraphDestVerticeId) ||
+						(v2 == generalGraphSrcVerticeId && v1 == generalGraphDestVerticeId))
+				{
+					if (v2 == generalGraphSrcVerticeId && v1 == generalGraphDestVerticeId)
+						isInverted = true;
+
+					if (minEdge == NULL)
+						minEdge = currentGeneralGraphEdge;
+					else if (less(getWeightFromEdge(currentGeneralGraphEdge), getWeightFromEdge(minEdge)))
+						minEdge = currentGeneralGraphEdge; // never changes if general graph is sorted
+				}
 			}
 		}
 
-		if (minGeneralGraphEdge != NULL)
+		if (minEdge != NULL)
 		{
-			int minEdgeSrcVerticeId = getSourceFromEdge(minGeneralGraphEdge);
-			int minEdgeDestVerticeId = getDestinationFromEdge(minGeneralGraphEdge);
-			int minEdgeWeight = getWeightFromEdge(minGeneralGraphEdge);
-
-			if (lastSrcVerticeId == minEdgeSrcVerticeId)
-			{
-				_appendEdgeToTourArray(newTour, createEdge(minEdgeSrcVerticeId, minEdgeDestVerticeId, minEdgeWeight));
-				newTour->visitedVerticesArray[idToPos(minEdgeDestVerticeId)] = true;
-			}
+			int src = getSourceFromEdge(minEdge);
+			int dest = getDestinationFromEdge(minEdge);
+			float w = getWeightFromEdge(minEdge);
+			if (isInverted)
+				_appendEdgeToTourArray(newTour, createEdge(dest, src, w));
 			else
-			{
-				_appendEdgeToTourArray(newTour, createEdge(minEdgeDestVerticeId, minEdgeSrcVerticeId, minEdgeWeight));
-				newTour->visitedVerticesArray[idToPos(minEdgeSrcVerticeId)] = true;
-			}
-			newTour->visitedVerticesCount += 1;
+				_appendEdgeToTourArray(newTour, createEdge(src, dest, w));
 		}
 	}
 
 	Edge *tourEdgesArray = newTour->edgesArray;
-	for (int k = 0; k < newTour->edgesAmount; k++)
+	for (int i = 0; i < newTour->edgesAmount; i++)
 	{
-		Edge currentEdge = *(tourEdgesArray + k);
+		Edge currentEdge = *(tourEdgesArray + i);
 		printf("%d → %d\n", getSourceFromEdge(currentEdge), getDestinationFromEdge(currentEdge));
 		newTour->minCost += getWeightFromEdge(currentEdge);
 	}
 
-	printf("\n\nTour - verticesAmount : %d, edgesAmount: %d, visitedVerticesCount: %d\n\n", newTour->verticesAmount, newTour->edgesAmount, newTour->visitedVerticesCount);
-
+	safeFree(visitedVerticesArray);
 	return newTour;
 }
 
-bool *initVisitedVerticesArray(int verticesAmount)
+int *initVisitedVerticesArray(int verticesAmount)
 {
-	bool *newVisitedVerticesArray = (bool *)malloc(verticesAmount * sizeof(bool));
+	int *newVisitedVerticesArray = (int *)malloc(verticesAmount * sizeof(int));
 
 	if (!wasAllocated(newVisitedVerticesArray))
 		return NULL;
 
 	for (int i = 0; i < verticesAmount; i++)
 	{
-		*(newVisitedVerticesArray + i) = false;
+		*(newVisitedVerticesArray + i) = 0;
 	}
 
 	return newVisitedVerticesArray;
