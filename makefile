@@ -1,6 +1,6 @@
 
 BIN_NAME=trab1
-ARG1=./input/berlin52.tsp
+ARG1=./input/pr1002.tsp
 
 C_SOURCE=$(wildcard ./source/*.c)
 H_SOURCE=$(wildcard ./include/*.h)

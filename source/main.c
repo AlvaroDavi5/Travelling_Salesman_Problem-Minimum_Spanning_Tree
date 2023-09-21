@@ -25,16 +25,15 @@ int main(int argc, char *argv[])
 
 	Graph graph = initGraph(getDimensionFromTSP(tsp), 0);
 	calculateDistanceBetweenCities(tsp, graph);
+	printf("Graph - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromGraph(graph), getEdgesAmountFromGraph(graph));
 
 	Graph mst = buildMST(graph);
+	printf("MST - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromGraph(mst), getEdgesAmountFromGraph(mst));
 
 	Tour tour = buildTour(graph, mst);
-
-	printf("Graph - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromGraph(graph), getEdgesAmountFromGraph(graph));
-	printf("MST - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromGraph(mst), getEdgesAmountFromGraph(mst));
 	printf("Tour - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromTour(tour), getEdgesAmountFromTour(tour));
 
-	printf("\n\nCusto - Graph: %.2f >= Tour: %.2f >= MST: %.2f\n", getMinCostFromGraph(graph), getMinCostFromTour(tour), getMinCostFromGraph(mst));
+	printf("\nCusto - Graph: %.2f >= Tour: %.2f >= MST: %.2f\n", getMinCostFromGraph(graph), getMinCostFromTour(tour), getMinCostFromGraph(mst));
 
 	destroyTSP(tsp);
 	destroyGraph(graph);
