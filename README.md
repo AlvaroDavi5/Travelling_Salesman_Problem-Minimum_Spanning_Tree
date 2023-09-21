@@ -38,7 +38,7 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
     - [ ] Imprimir MST em arquivo '.mst'
     - [x] Refatorar e remover passos desnecessários (acessos e alocações)
   - [ ] Tour
-    - [ ] Criar TAD para armazenar Tour
+    - [x] Criar TAD para armazenar Tour
       - [x] O TAD deve ser criado com base na MST
       - [x] O TAD deve conter um array para as arestas (assim como a MST)
       - [x] O TAD deve conter um array para os vértices já visitados e um contador
@@ -49,7 +49,7 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
       - [x] O TAD deve voltar à MST sempre que possível
       - [x] O TAD deve conter um custo mínimo menor que o TSP pela MST e maior que o da MST
     - [ ] Imprimir Tour em arquivo '.tour'
-    - [ ] Refatorar e remover passos desnecessários (acessos e alocações)
+    - [x] Refatorar e remover passos desnecessários (acessos e alocações)
 - [ ] Relatório
   - [ ] Documentar complexidade dos algoritmos usados (_Big O, Big Omega, Big Theta_)
   - [ ] Documentar análise empírica com base no tempo de execução para cada etapa

@@ -38,10 +38,6 @@ Graph initGraph(int verticesAmount, int edgesAmount)
 	return newGraph;
 }
 
-void writeMSTFile(char *fileName, Graph mst)
-{
-}
-
 void destroyGraph(Graph graph)
 {
 	destroyEdgesArray(graph->edgesArray, graph->edgesAmount);
@@ -250,4 +246,8 @@ void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph)
 			}
 		}
 	}
+}
+
+void writeMSTFile(char *fileName, Graph mst)
+{
 }

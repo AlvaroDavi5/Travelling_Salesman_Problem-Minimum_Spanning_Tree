@@ -5,9 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #include "./utils.h"
-
-#define MAX_CITY_DISTANCE 999999999
 
 typedef struct city_struct city;
 typedef city *City;
@@ -15,8 +14,8 @@ typedef struct tsp_struct TSP;
 typedef TSP *TravellingSalesmanProblem;
 
 TravellingSalesmanProblem initTSP();
-void readTSPFile(char *fileName, TravellingSalesmanProblem tsp);
 void destroyTSP(TravellingSalesmanProblem tsp);
+char *getNameFromTSP(TravellingSalesmanProblem tsp);
 int getDimensionFromTSP(TravellingSalesmanProblem tsp);
 City createCity(int id, float x, float y);
 int getIDFromCity(City city);
@@ -25,5 +24,6 @@ float getYCoordinateFromCity(City city);
 City *initCitiesArray(size_t n);
 City *getCitiesArrayFromTSP(TravellingSalesmanProblem tsp);
 void destroyCitiesArray(City *array, size_t n);
+void readTSPFile(char *fileName, TravellingSalesmanProblem tsp);
 
 #endif

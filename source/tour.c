@@ -16,16 +16,13 @@ Tour initTour(int verticesAmount)
 		return NULL;
 
 	newTour->verticesAmount = verticesAmount;
-	newTour->edgesAmount = 0;
-	newTour->edgesArray = NULL;
+	int edgesAmount = verticesAmount; // E = V
+	newTour->edgesAmount = edgesAmount;
+	newTour->edgesArray = initEdgesArray(edgesAmount);
 	newTour->lastSettedEdge = -1;
 	newTour->minCost = 0;
 
 	return newTour;
-}
-
-void writeTourFile(char *fileName, Tour tour)
-{
 }
 
 void destroyTour(Tour tour)
@@ -36,15 +33,8 @@ void destroyTour(Tour tour)
 
 void _appendEdgeToTourArray(Tour tour, Edge edge)
 {
-	if (!wasAllocated(tour->edgesArray) && tour->edgesAmount == 0)
-	{
-		tour->edgesArray = (Edge *)malloc(1 * sizeof(Edge));
-	}
-	else if (!wasAllocated(tour->edgesArray))
+	if (!wasAllocated(tour->edgesArray) || tour->lastSettedEdge == (tour->edgesAmount - 1))
 		return;
-
-	tour->edgesAmount += 1;
-	tour->edgesArray = (Edge *)realloc(tour->edgesArray, tour->edgesAmount * sizeof(Edge));
 
 	int pos = tour->lastSettedEdge + 1;
 	tour->edgesArray[pos] = edge;
@@ -64,14 +54,19 @@ Tour buildTour(Graph graph, Graph mst)
 		Edge currentEdge = *(mstEdgesArray + i);
 		int srcVerticeId = getSourceFromEdge(currentEdge);
 		int destVerticeId = getDestinationFromEdge(currentEdge);
+		bool isInverted = addedVerticesArray[idToPos(destVerticeId)] > addedVerticesArray[idToPos(srcVerticeId)];
 
 		if (addedVerticesArray[idToPos(srcVerticeId)] < 2 &&
 				addedVerticesArray[idToPos(destVerticeId)] < 2)
 		{
 			float w = getWeightFromEdge(currentEdge);
 
-			_appendEdgeToTourArray(newTour, createEdge(srcVerticeId, destVerticeId, w));
+			if (isInverted)
+				_appendEdgeToTourArray(newTour, createEdge(destVerticeId, srcVerticeId, w));
+			else
+				_appendEdgeToTourArray(newTour, createEdge(srcVerticeId, destVerticeId, w));
 			newTour->minCost += w;
+
 			addedVerticesArray[idToPos(srcVerticeId)] += 1;
 			addedVerticesArray[idToPos(destVerticeId)] += 1;
 		}
@@ -84,13 +79,17 @@ Tour buildTour(Graph graph, Graph mst)
 		Edge currentEdge = *(generalGraphEdgesArray + i);
 		int srcVerticeId = getSourceFromEdge(currentEdge);
 		int destVerticeId = getDestinationFromEdge(currentEdge);
+		bool isInverted = addedVerticesArray[idToPos(destVerticeId)] > addedVerticesArray[idToPos(srcVerticeId)];
 
 		if (addedVerticesArray[idToPos(srcVerticeId)] < 2 &&
 				addedVerticesArray[idToPos(destVerticeId)] < 2)
 		{
 			float w = getWeightFromEdge(currentEdge);
 
-			_appendEdgeToTourArray(newTour, createEdge(srcVerticeId, destVerticeId, w));
+			if (isInverted)
+				_appendEdgeToTourArray(newTour, createEdge(destVerticeId, srcVerticeId, w));
+			else
+				_appendEdgeToTourArray(newTour, createEdge(srcVerticeId, destVerticeId, w));
 			newTour->minCost += w;
 
 			addedVerticesArray[idToPos(srcVerticeId)] += 1;
@@ -130,4 +129,8 @@ int getEdgesAmountFromTour(Tour tour)
 float getMinCostFromTour(Tour tour)
 {
 	return tour->minCost;
+}
+
+void writeTourFile(char *fileName, Tour tour)
+{
 }

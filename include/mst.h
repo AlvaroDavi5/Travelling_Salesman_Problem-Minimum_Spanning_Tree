@@ -24,7 +24,6 @@ typedef struct subset_struct Subset;
 	}
 
 Graph initGraph(int verticesAmount, int edgesAmount);
-void writeMSTFile(char *fileName, Graph mst);
 void destroyGraph(Graph graph);
 Subset *initSubSets(int verticesAmount);
 void destroySubSets(Subset *subsets);
@@ -42,5 +41,6 @@ Edge *initEdgesArray(int edgesAmount);
 Edge *getEdgesArrayFromGraph(Graph graph);
 void destroyEdgesArray(Edge *array, size_t n);
 void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph);
+void writeMSTFile(char *fileSteam, Graph mst);
 
 #endif
