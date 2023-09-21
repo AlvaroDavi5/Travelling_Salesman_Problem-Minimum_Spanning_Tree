@@ -131,6 +131,26 @@ float getMinCostFromTour(Tour tour)
 	return tour->minCost;
 }
 
-void writeTourFile(char *fileName, Tour tour)
+void writeTourFile(char *fileSteam, Tour tour)
 {
+	char fileName[MAX_LINE_LENGTH] = "./output/";
+	strcat(fileName, fileSteam);
+	strcat(fileName, ".tour");
+
+	FILE *file = fopen(fileName, "a");
+
+	fprintf(file, "NAME: %s\n", fileSteam);
+	fprintf(file, "TYPE: TOUR\n");
+	fprintf(file, "DIMENSION: %d\n", getVerticesAmountFromTour(tour));
+
+	fprintf(file, "TOUR_SECTION\n");
+	Edge *edgesArray = tour->edgesArray;
+	for (int i = 0; i < getEdgesAmountFromTour(tour); i++)
+	{
+		Edge currentEdge = *(edgesArray + i);
+		fprintf(file, "%d\n", getDestinationFromEdge(currentEdge));
+	}
+	fprintf(file, "EOF\n");
+
+	fclose(file);
 }

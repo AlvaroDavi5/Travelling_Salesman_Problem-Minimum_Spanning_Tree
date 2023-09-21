@@ -32,10 +32,10 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
       - [x] Tabela de distâncias
       - [x] Comparações
       - [x] Acréscimo de arestas
-  - [ ] MST (Minimum Spanning Tree)
+  - [x] MST (Minimum Spanning Tree)
     - [x] Implementar o _Algoritmo de Kruskal_ para criar MST e calcular o menor custo
     - [X] Criar TAD para MST (árvore/grafo)
-    - [ ] Imprimir MST em arquivo '.mst'
+    - [x] Imprimir MST em arquivo '.mst'
     - [x] Refatorar e remover passos desnecessários (acessos e alocações)
   - [ ] Tour
     - [x] Criar TAD para armazenar Tour
@@ -48,7 +48,8 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
         1. A menor distância (aresta de menor peso) entre as cidades ao redor
       - [x] O TAD deve voltar à MST sempre que possível
       - [x] O TAD deve conter um custo mínimo menor que o TSP pela MST e maior que o da MST
-    - [ ] Imprimir Tour em arquivo '.tour'
+      - [ ] O TAD deve ter as arestas ordenadas de forma que o destino de uma seja a origem da outra
+    - [x] Imprimir Tour em arquivo '.tour'
     - [x] Refatorar e remover passos desnecessários (acessos e alocações)
 - [ ] Relatório
   - [ ] Documentar complexidade dos algoritmos usados (_Big O, Big Omega, Big Theta_)

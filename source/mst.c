@@ -248,6 +248,26 @@ void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph)
 	}
 }
 
-void writeMSTFile(char *fileName, Graph mst)
+void writeMSTFile(char *fileSteam, Graph mst)
 {
+	char fileName[MAX_LINE_LENGTH] = "./output/";
+	strcat(fileName, fileSteam);
+	strcat(fileName, ".mst");
+
+	FILE *file = fopen(fileName, "a");
+
+	fprintf(file, "NAME: %s\n", fileSteam);
+	fprintf(file, "TYPE: MST\n");
+	fprintf(file, "DIMENSION: %d\n", getVerticesAmountFromGraph(mst));
+
+	fprintf(file, "MST_SECTION\n");
+	Edge *edgesArray = getEdgesArrayFromGraph(mst);
+	for (int i = 0; i < getEdgesAmountFromGraph(mst); i++)
+	{
+		Edge currentEdge = *(edgesArray + i);
+		fprintf(file, "%d %d\n", getDestinationFromEdge(currentEdge), getSourceFromEdge(currentEdge));
+	}
+	fprintf(file, "EOF\n");
+
+	fclose(file);
 }
