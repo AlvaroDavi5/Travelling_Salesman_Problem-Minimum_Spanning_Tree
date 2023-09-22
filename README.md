@@ -21,9 +21,9 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
 - [x] Gerenciamento de Memória
 - [x] Tipos Abstratos de Dados (TADs)
 - [x] Estruturas Opacas
-- [ ] Ponteiros para Funções
+- [x] Ponteiros para Funções
 - [ ] Funcionalidades
-  - [x] TSP
+  - [x] TSP (Travelling Salesman Problem)
     - [x] Leitura de arquivos '.tsp'
     - [x] Criar TAD para TSP e para as cidades
     - [x] Calcular distância de uma cidade para outra com base nas coordenadas
@@ -32,14 +32,25 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
       - [x] Tabela de distâncias
       - [x] Comparações
       - [x] Acréscimo de arestas
-  - [ ] MST
+  - [x] MST (Minimum Spanning Tree)
     - [x] Implementar o _Algoritmo de Kruskal_ para criar MST e calcular o menor custo
     - [X] Criar TAD para MST (árvore/grafo)
-    - [ ] Imprimir MST em arquivo '.mst'
+    - [x] Imprimir MST em arquivo '.mst'
     - [x] Refatorar e remover passos desnecessários (acessos e alocações)
   - [ ] Tour
-    - [ ] ...
-    - [ ] Refatorar e remover passos desnecessários (acessos e alocações)
+    - [x] Criar TAD para armazenar Tour
+      - [x] O TAD deve ser criado com base na MST
+      - [x] O TAD deve conter um array para as arestas (assim como a MST)
+      - [x] O TAD deve conter um array para os vértices já visitados e um contador
+      - [x] O TAD deve calcular/verificar:
+        1. As ocorrências de cidades repetidas
+        1. As cidades (vértices) ao redor
+        1. A menor distância (aresta de menor peso) entre as cidades ao redor
+      - [x] O TAD deve voltar à MST sempre que possível
+      - [x] O TAD deve conter um custo mínimo menor que o TSP pela MST e maior que o da MST
+      - [ ] O TAD deve ter as arestas ordenadas de forma que o destino de uma seja a origem da outra
+    - [x] Imprimir Tour em arquivo '.tour'
+    - [x] Refatorar e remover passos desnecessários (acessos e alocações)
 - [ ] Relatório
   - [ ] Documentar complexidade dos algoritmos usados (_Big O, Big Omega, Big Theta_)
   - [ ] Documentar análise empírica com base no tempo de execução para cada etapa

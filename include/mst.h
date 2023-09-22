@@ -4,10 +4,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
+#include <time.h>
 #include "./tsp.h"
 #include "./utils.h"
-
-#define MAX_TOUR_COST 999999999
 
 typedef struct edge_struct edge;
 typedef edge *Edge;
@@ -30,12 +30,17 @@ void destroySubSets(Subset *subsets);
 int findSet(Subset *subsets, int component);
 void unionSet(Subset *subsets, int src, int dest);
 Graph buildMST(Graph graph);
+int getVerticesAmountFromGraph(Graph graph);
+int getEdgesAmountFromGraph(Graph graph);
+float getMinCostFromGraph(Graph graph);
 Edge createEdge(int src, int dest, float w);
+int getSourceFromEdge(Edge edge);
+int getDestinationFromEdge(Edge edge);
+float getWeightFromEdge(Edge edge);
 Edge *initEdgesArray(int edgesAmount);
-void appendEdgeToArray(Graph graph, Edge edge);
 Edge *getEdgesArrayFromGraph(Graph graph);
 void destroyEdgesArray(Edge *array, size_t n);
 void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph);
-void quickSort(Item *array, size_t begin, size_t end);
+void writeMSTFile(char *fileSteam, Graph mst);
 
 #endif

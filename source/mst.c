@@ -33,7 +33,7 @@ Graph initGraph(int verticesAmount, int edgesAmount)
 	newGraph->edgesAmount = edgesAmount;
 	newGraph->edgesArray = initEdgesArray(edgesAmount);
 	newGraph->lastSettedEdge = -1;
-	newGraph->minCost = MAX_TOUR_COST;
+	newGraph->minCost = 0;
 
 	return newGraph;
 }
@@ -86,19 +86,30 @@ void unionSet(Subset *subsets, int src, int dest)
 	}
 }
 
+int _compareEdgesWeight(const void *a, const void *b)
+{
+	const Edge edgeA = *(const Edge *)a;
+	const Edge edgeB = *(const Edge *)b;
+
+	if (edgeA->weight < edgeB->weight)
+		return -1;
+	if (edgeA->weight > edgeB->weight)
+		return 1;
+	return 0;
+}
+
 Graph buildMST(Graph graph) // Kruskal Algorithm
 {
-	float minCost = 0.0;
-
 	// sorting all edges in increasing order of their edge weights
-	quickSort(graph->edgesArray, 0, (graph->edgesAmount - 1));
+	qsort(graph->edgesArray, graph->edgesAmount, sizeof(Edge), _compareEdgesWeight);
 
 	// creating vertices subsets
 	Subset *subSets = initSubSets(graph->verticesAmount);
 
 	// initialize MST
-	Graph MST = initGraph(graph->verticesAmount, graph->verticesAmount - 1); // E = (V - 1)
+	Graph mst = initGraph(graph->verticesAmount, graph->verticesAmount - 1); // E = (V - 1)
 	int mstEdges = 0;
+	float minCost = 0.0;
 
 	// iterate through sorted edges
 	for (int i = 0; i < graph->edgesAmount; i++)
@@ -111,7 +122,7 @@ Graph buildMST(Graph graph) // Kruskal Algorithm
 		if (sourceSet != destinationSet) // check if the edges sets are diferent to avoid cycle
 		{
 			// add it to the MST
-			MST->edgesArray[mstEdges++] = createEdge(currentEdge->source, currentEdge->destination, currentEdge->weight);
+			mst->edgesArray[mstEdges++] = createEdge(currentEdge->source, currentEdge->destination, currentEdge->weight);
 			minCost += edgeWeight;
 			// unify subsets
 			unionSet(subSets, sourceSet, destinationSet);
@@ -119,9 +130,24 @@ Graph buildMST(Graph graph) // Kruskal Algorithm
 	}
 
 	destroySubSets(subSets);
-	MST->minCost = minCost;
+	mst->minCost = minCost;
 
-	return MST;
+	return mst;
+}
+
+int getVerticesAmountFromGraph(Graph graph)
+{
+	return graph->verticesAmount;
+}
+
+int getEdgesAmountFromGraph(Graph graph)
+{
+	return graph->edgesAmount;
+}
+
+float getMinCostFromGraph(Graph graph)
+{
+	return graph->minCost;
 }
 
 Edge createEdge(int src, int dest, float w)
@@ -138,6 +164,21 @@ Edge createEdge(int src, int dest, float w)
 	return newEdge;
 }
 
+int getSourceFromEdge(Edge edge)
+{
+	return edge->source;
+}
+
+int getDestinationFromEdge(Edge edge)
+{
+	return edge->destination;
+}
+
+float getWeightFromEdge(Edge edge)
+{
+	return edge->weight;
+}
+
 Edge *initEdgesArray(int edgesAmount)
 {
 	Edge *edgesArray = (Edge *)malloc(edgesAmount * sizeof(Edge));
@@ -148,7 +189,7 @@ Edge *initEdgesArray(int edgesAmount)
 	return edgesArray;
 }
 
-void appendEdgeToArray(Graph graph, Edge edge)
+void _appendEdgeToGraphArray(Graph graph, Edge edge)
 {
 	if (!wasAllocated(graph->edgesArray) || graph->lastSettedEdge == (graph->edgesAmount - 1))
 		return;
@@ -200,46 +241,33 @@ void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph)
 				// H^2 = OC^2 + AC^2
 				float distance = (float)sqrt(pow(xDiff, 2) + pow(yDiff, 2));
 
-				appendEdgeToArray(graph, createEdge(posToId(i), posToId(j), distance));
+				_appendEdgeToGraphArray(graph, createEdge(posToId(i), posToId(j), distance));
+				graph->minCost += distance;
 			}
 		}
 	}
 }
 
-size_t _partition(Item *array, size_t begin, size_t end)
+void writeMSTFile(char *fileSteam, Graph mst)
 {
-	size_t pivotIndex = begin;
-	Item pivotElement = array[end];
+	char fileName[MAX_LINE_LENGTH] = "./output/";
+	strcat(fileName, fileSteam);
+	strcat(fileName, ".mst");
 
-	for (size_t i = begin; i < end; i++)
+	FILE *file = fopen(fileName, "a");
+
+	fprintf(file, "NAME: %s\n", fileSteam);
+	fprintf(file, "TYPE: MST\n");
+	fprintf(file, "DIMENSION: %d\n", getVerticesAmountFromGraph(mst));
+
+	fprintf(file, "MST_SECTION\n");
+	Edge *edgesArray = getEdgesArrayFromGraph(mst);
+	for (int i = 0; i < getEdgesAmountFromGraph(mst); i++)
 	{
-		if (array[i]->weight <= pivotElement->weight)
-		{
-			swap(array[i], array[pivotIndex]);
-			pivotIndex++;
-		}
+		Edge currentEdge = *(edgesArray + i);
+		fprintf(file, "%d %d\n", getDestinationFromEdge(currentEdge), getSourceFromEdge(currentEdge));
 	}
+	fprintf(file, "EOF\n");
 
-	swap(array[pivotIndex], array[end]);
-
-	return pivotIndex;
-}
-
-size_t _randomPartition(Item *array, size_t begin, size_t end)
-{
-	size_t pivotIndex = begin + (rand() % (end - begin + 1));
-
-	swap(array[pivotIndex], array[end]);
-	return _partition(array, begin, end);
-}
-
-void quickSort(Item *array, size_t begin, size_t end)
-{
-	if (begin < end)
-	{
-		size_t partitionIndex = _randomPartition(array, begin, end);
-		if (partitionIndex > 0)
-			quickSort(array, begin, partitionIndex - 1);
-		quickSort(array, partitionIndex + 1, end);
-	}
+	fclose(file);
 }

@@ -1,6 +1,18 @@
+default=\033[0m
+red=\033[0;31m
+brown=\033[0;33m
+blue=\033[0;34m
+purple=\033[0;35m
+lightRed=\033[1;31m
+lightGreen=\033[1;32m
+yellow=\033[1;33m
+redBackground=\033[41;1;37m
+yellowBackground=\033[43;1;37m
+blueBackground=\033[44;1;37m
+purpleBackground=\033[45;1;37m
 
 BIN_NAME=trab1
-ARG1=./input/berlin52.tsp
+ARG1=./input/pr1002.tsp
 
 C_SOURCE=$(wildcard ./source/*.c)
 H_SOURCE=$(wildcard ./include/*.h)
@@ -33,35 +45,40 @@ valgrind: all
 	@ valgrind ${VALGRIND_FLAGS} ./${BIN_NAME} ${ARG1}
 
 
+assembly: all
+	@ gcc -E ./source/main.c > ./object/precomp_code.i
+	@ gcc -S ./object/precomp_code.i -o ./object/assembly_code.s
+
+
 all: objectFolder ./${BIN_NAME}
-	@ echo " \033[1;32m  Done!  \033[0m "
+	@ echo " ${lightGreen}  Done!  ${default} "
 	@ echo ''
 
 
 objectFolder:
-	@ mkdir -p object
+	@ mkdir -p object output
 
 
 ./${BIN_NAME}: ${OBJ}
 	@ ${CPL} $^ -o $@ -lm
-	@ echo " \033[0;33m  Building Binary \033[43;1;37m$@\033[0m\033[0;33m  \033[0m "
+	@ echo " ${brown}  Building Binary ${yellowBackground}$@${default}${brown}  ${default} "
 	@ echo ''
 
 
 ./object/%.o: ./source/%.c ./include/%.h
 	@ ${CPL} $< -o $@ -I ./include ${CPL_FLAGS}
-	@ echo " \033[0;35m  Generating compilation object \033[45;1;37m$@\033[0m\033[0;35m  \033[0m "
+	@ echo " ${purple}  Generating compilation object ${purpleBackground}$@${default}${purple}  ${default} "
 	@ echo ''
 
 
 ./object/main.o: ./source/main.c ${H_SOURCE}
 	@ ${CPL} $< -o $@ -I ./include ${CPL_FLAGS}
-	@ echo " \033[0;34m  Generating compilation object \033[44;1;37m$@\033[0m\033[0;34m  \033[0m "
+	@ echo " ${blue}  Generating compilation object ${blueBackground}$@${default}${blue}  ${default} "
 	@ echo ''
 
 
 clean:
-	@ rm -rf ./object/*.o ./object/*.i ./object/*.s *~ ./${BIN_NAME}
+	@ rm -rf ./object/*.o ./object/*.i ./object/*.s ./output/ *~ ./${BIN_NAME}
 	@ rmdir object
-	@ echo " \033[1;31m  Removing binary \033[41;1;37m./${BIN_NAME}\033[0m\033[1;31m and compilation objects \033[41;1;37m${OBJ}\033[0m\033[1;31m and backup or output files  \033[0m "
+	@ echo " ${lightRed}  Removing binary ${redBackground}./${BIN_NAME}${default}${lightRed} and compilation objects ${redBackground}${OBJ}${default}${lightRed} and output files  ${default} "
 	@ echo ''
