@@ -1,0 +1,66 @@
+RESULTS
+
+berlin52
+Read TSP Interval: 0.00010
+Build Graph Interval: 0.00016
+Build MST Interval: 0.00026
+Build Tour Interval: 0.00028
+Full Execution Interval: 0.00090
+OPT TOUR LEN:  7544.365901904087
+DEF TOUR LEN:  10203.849730879328
+MY TOUR LEN:   10403.860360720962
+
+
+eil101
+Read TSP Interval: 0.00025
+Build Graph Interval: 0.00116
+Build MST Interval: 0.00168
+Build Tour Interval: 0.00334
+Full Execution Interval: 0.00683
+OPT TOUR LEN:  642.3095357906022
+MY TOUR LEN:   886.1115549507533
+DEF TOUR LEN:  913.8415442402764
+
+
+tsp225
+Read TSP Interval: 0.00063
+Build Graph Interval: 0.00678
+Build MST Interval: 0.00813
+Build Tour Interval: 0.01476
+Full Execution Interval: 0.03092
+OPT TOUR LEN:  3859.0
+DEF TOUR LEN:  5276.38793936093
+MY TOUR LEN:   5324.876857440186
+
+
+a280
+Read TSP Interval: 0.00055
+Build Graph Interval: 0.00912
+Build MST Interval: 0.00893
+Build Tour Interval: 0.03144
+Full Execution Interval: 0.05088
+OPT TOUR LEN:  2586.7696475631606
+MY TOUR LEN:   3480.2108772142674
+DEF TOUR LEN:  3878.37390654869
+
+
+pr1002
+Read TSP Interval: 0.00144
+Build Graph Interval: 0.06983
+Build MST Interval: 0.20555
+Build Tour Interval: 1.54358
+Full Execution Interval: 1.84821
+OPT TOUR LEN:  259066.6630526768
+MY TOUR LEN:   351350.5630052579
+DEF TOUR LEN:  359325.00846265815
+
+
+d18512
+Read TSP Interval: 0.01357
+Build Graph Interval: 18.03470
+Build MST Interval: 148.88872
+Build Tour Interval: 9260.80673
+Full Execution Interval: 9459.46471
+MY TOUR LEN:   889565.7047727136
+DEF TOUR LEN:  928233.6749880624
+
