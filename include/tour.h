@@ -15,11 +15,9 @@ typedef tour *Tour;
 
 Tour initTour(int verticesAmount);
 void destroyTour(Tour tour);
-Tour buildTour(Graph graph, Graph mst);
-int *initVisitedVerticesArray(int verticesAmount);
+Tour buildTour(Graph mst);
+int *initTourArray(int verticesAmount);
 int getVerticesAmountFromTour(Tour tour);
-int getEdgesAmountFromTour(Tour tour);
-float getMinCostFromTour(Tour tour);
 void writeTourFile(char *fileSteam, Tour tour);
 
 #endif

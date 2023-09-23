@@ -11,7 +11,7 @@
 int main(int argc, char *argv[])
 {
 	srand(time(NULL));
-	clock_t start = clock(), stop = clock();
+	clock_t start = clock();
 
 	if (argc < 2)
 	{
@@ -19,30 +19,43 @@ int main(int argc, char *argv[])
 		exit(EXIT_FAILURE);
 	}
 
-	start = clock();
+	clock_t tspStart = clock();
 	TSP *tsp = initTSP();
 	readTSPFile(argv[1], tsp);
+	clock_t tspStop = clock();
+	printTimeInterval(tspStart, tspStop, "Read TSP Interval");
 
+	char tspName[MAX_LINE_LENGTH] = "";
+	strcpy(tspName, getNameFromTSP(tsp));
+	printf("%s\n", tspName);
+
+	clock_t graphStart = clock();
 	Graph graph = initGraph(getDimensionFromTSP(tsp), 0);
 	calculateDistanceBetweenCities(tsp, graph);
+	clock_t graphStop = clock();
+	printTimeInterval(graphStart, graphStop, "Build Graph Interval");
 	printf("Graph - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromGraph(graph), getEdgesAmountFromGraph(graph));
 
+	clock_t mstStart = clock();
 	Graph mst = buildMST(graph);
-	writeMSTFile(getNameFromTSP(tsp), mst);
+	writeMSTFile(tspName, mst);
+	clock_t mstStop = clock();
+	printTimeInterval(mstStart, mstStop, "Build MST Interval");
 	printf("MST - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromGraph(mst), getEdgesAmountFromGraph(mst));
 
-	Tour tour = buildTour(graph, mst);
-	writeTourFile(getNameFromTSP(tsp), tour);
-	printf("Tour - verticesAmount : %d, edgesAmount: %d\n", getVerticesAmountFromTour(tour), getEdgesAmountFromTour(tour));
-
-	printf("\nCusto - Graph: %.2f >= Tour: %.2f >= MST: %.2f\n", getMinCostFromGraph(graph), getMinCostFromTour(tour), getMinCostFromGraph(mst));
+	clock_t tourStart = clock();
+	Tour tour = buildTour(mst);
+	writeTourFile(tspName, tour);
+	clock_t tourStop = clock();
+	printTimeInterval(tourStart, tourStop, "Build Tour Interval");
+	printf("Tour - verticesAmount : %d\n", getVerticesAmountFromTour(tour));
 
 	destroyTSP(tsp);
 	destroyGraph(graph);
 	destroyGraph(mst);
 	destroyTour(tour);
-	stop = clock();
 
+	clock_t stop = clock();
 	printTimeInterval(start, stop, "Full Execution Interval");
 
 	return 0;
