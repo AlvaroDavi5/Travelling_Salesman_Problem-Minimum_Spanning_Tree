@@ -27,19 +27,21 @@ void destroyTour(Tour tour)
 	safeFree(tour);
 }
 
+// O(M * N * P)
 void depthFirstSearch(Tour tour, bool *visitedVerticesArray, Edge *mstEdgesArray, int mstVerticesAmount, int mstEdgesAmount, int vertexIndex)
 {
 	int vertexId = posToId(vertexIndex);
 	tour->tourArray[tour->tourIndex++] = vertexId;
 	visitedVerticesArray[vertexIndex] = true;
 
-	for (int i = 0; i < mstVerticesAmount; i++)
+	for (int i = 0; i < mstVerticesAmount; i++) // O(M)
 	{
-		if (!visitedVerticesArray[i] && isEdgeInGraph(mstEdgesArray, mstEdgesAmount, vertexId, posToId(i)))
-			depthFirstSearch(tour, visitedVerticesArray, mstEdgesArray, mstVerticesAmount, mstEdgesAmount, i);
+		if (!visitedVerticesArray[i] && isEdgeInGraph(mstEdgesArray, mstEdgesAmount, vertexId, posToId(i))) // O(1) + O(N)
+			depthFirstSearch(tour, visitedVerticesArray, mstEdgesArray, mstVerticesAmount, mstEdgesAmount, i); // complexity is O(P) by recursion
 	}
 }
 
+// O(M * N * P) + O(K)
 Tour buildTour(Graph mst)
 {
 	const int mstVerticesAmount = getVerticesAmountFromGraph(mst);
@@ -48,10 +50,10 @@ Tour buildTour(Graph mst)
 	Edge *mstEdgesArray = getEdgesArrayFromGraph(mst);
 	const int mstEdgesAmount = getEdgesAmountFromGraph(mst);
 	bool visitedVerticesArray[mstVerticesAmount];
-	for (int i = 0; i < mstVerticesAmount; i++)
+	for (int i = 0; i < mstVerticesAmount; i++) // O(K)
 		visitedVerticesArray[i] = false;
 
-	depthFirstSearch(newTour, visitedVerticesArray, mstEdgesArray, mstVerticesAmount, mstEdgesAmount, 0);
+	depthFirstSearch(newTour, visitedVerticesArray, mstEdgesArray, mstVerticesAmount, mstEdgesAmount, 0); // O(M * N * P)
 
 	return newTour;
 }
@@ -76,6 +78,7 @@ int getVerticesAmountFromTour(Tour tour)
 	return tour->verticesAmount;
 }
 
+// O(N)
 void writeTourFile(char *fileSteam, Tour tour)
 {
 	char fileName[MAX_LINE_LENGTH] = "./output/";
@@ -93,8 +96,8 @@ void writeTourFile(char *fileSteam, Tour tour)
 	int *tourArray = tour->tourArray;
 	for (int i = 0; i < tourVerticesAmount; i++)
 	{
-		int currentVertice = *(tourArray + i);
-		fprintf(file, "%d\n", currentVertice);
+		int currentVertex = *(tourArray + i);
+		fprintf(file, "%d\n", currentVertex);
 	}
 	fprintf(file, "EOF\n");
 

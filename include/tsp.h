@@ -18,7 +18,6 @@ void destroyTSP(TravellingSalesmanProblem tsp);
 char *getNameFromTSP(TravellingSalesmanProblem tsp);
 int getDimensionFromTSP(TravellingSalesmanProblem tsp);
 City createCity(int id, float x, float y);
-int getIDFromCity(City city);
 float getXCoordinateFromCity(City city);
 float getYCoordinateFromCity(City city);
 City *initCitiesArray(size_t n);
