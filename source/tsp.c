@@ -97,7 +97,7 @@ void destroyCitiesArray(City *array, size_t n)
 	}
 }
 
-// O(N * M)
+// O(N * M) == O(N)
 void readTSPFile(char *fileName, TravellingSalesmanProblem tsp)
 {
 	FILE *file = fopen(fileName, "r");
