@@ -26,10 +26,6 @@ typedef struct subset_struct Subset;
 
 Graph initGraph(int verticesAmount, int edgesAmount);
 void destroyGraph(Graph graph);
-Subset *initSubSets(int verticesAmount);
-void destroySubSets(Subset *subsets);
-int findSet(Subset *subsets, int component);
-void unionSet(Subset *subsets, int src, int dest);
 Graph buildMST(Graph graph);
 int getVerticesAmountFromGraph(Graph graph);
 int getEdgesAmountFromGraph(Graph graph);

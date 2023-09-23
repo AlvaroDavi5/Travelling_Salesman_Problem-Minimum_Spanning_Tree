@@ -59,11 +59,6 @@ City createCity(int id, float x, float y)
 	return newCity;
 }
 
-int getIDFromCity(City city)
-{
-	return city->id;
-}
-
 float getXCoordinateFromCity(City city)
 {
 	return city->x;
@@ -102,6 +97,7 @@ void destroyCitiesArray(City *array, size_t n)
 	}
 }
 
+// O(N * M)
 void readTSPFile(char *fileName, TravellingSalesmanProblem tsp)
 {
 	FILE *file = fopen(fileName, "r");

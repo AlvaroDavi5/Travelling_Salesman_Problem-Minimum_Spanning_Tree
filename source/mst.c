@@ -62,18 +62,20 @@ void destroySubSets(Subset *subsets)
 	safeFree(subsets);
 }
 
+// O(N)
 int findSet(Subset *subsets, int component)
 {
 	if (subsets[component].parent != component)
-		subsets[component].parent = findSet(subsets, subsets[component].parent);
+		subsets[component].parent = findSet(subsets, subsets[component].parent); // recursion is like a loop/iteration
 
 	return subsets[component].parent;
 }
 
+// 2O(N) == O(N)
 void unionSet(Subset *subsets, int src, int dest)
 {
-	int srcSet = findSet(subsets, src);
-	int destSet = findSet(subsets, dest);
+	int srcSet = findSet(subsets, src); // O(N)
+	int destSet = findSet(subsets, dest); // O(N)
 
 	if (subsets[srcSet].rank < subsets[destSet].rank)
 		subsets[srcSet].parent = destSet;
@@ -98,10 +100,11 @@ int _compareEdgesWeight(const void *a, const void *b)
 	return 0;
 }
 
+// O(N * lg(N)) + O(N) * (2O(N) + O(N)) == O(N * lg(N)) + O(N^2)
 Graph buildMST(Graph graph) // Kruskal Algorithm
 {
 	// sorting all edges in increasing order of their edge weights
-	qsort(graph->edgesArray, graph->edgesAmount, sizeof(Edge), _compareEdgesWeight);
+	qsort(graph->edgesArray, graph->edgesAmount, sizeof(Edge), _compareEdgesWeight); // O(N * lg(N))
 
 	// creating vertices subsets
 	Subset *subSets = initSubSets(graph->verticesAmount);
@@ -112,11 +115,11 @@ Graph buildMST(Graph graph) // Kruskal Algorithm
 	float minCost = 0.0;
 
 	// iterate through sorted edges
-	for (int i = 0; i < graph->edgesAmount; i++)
+	for (int i = 0; i < graph->edgesAmount; i++) // O(N)
 	{
 		Edge currentEdge = graph->edgesArray[i];
-		int sourceSet = findSet(subSets, idToPos(currentEdge->source));
-		int destinationSet = findSet(subSets, idToPos(currentEdge->destination));
+		int sourceSet = findSet(subSets, idToPos(currentEdge->source)); // O(N)
+		int destinationSet = findSet(subSets, idToPos(currentEdge->destination)); // O(N)
 		float edgeWeight = currentEdge->weight;
 
 		if (sourceSet != destinationSet) // check if the edges sets are diferent to avoid cycle
@@ -125,7 +128,7 @@ Graph buildMST(Graph graph) // Kruskal Algorithm
 			mst->edgesArray[mstEdges++] = createEdge(currentEdge->source, currentEdge->destination, currentEdge->weight);
 			minCost += edgeWeight;
 			// unify subsets
-			unionSet(subSets, sourceSet, destinationSet);
+			unionSet(subSets, sourceSet, destinationSet); // O(N)
 		}
 	}
 
@@ -204,6 +207,7 @@ Edge *getEdgesArrayFromGraph(Graph graph)
 	return graph->edgesArray;
 }
 
+// O(N)
 bool isEdgeInGraph(Edge *edgesArray, int edgesAmount, int v1, int v2)
 {
 	for (int i = 0; i < edgesAmount; i++)
@@ -233,6 +237,7 @@ void destroyEdgesArray(Edge *array, size_t n)
 	}
 }
 
+// O(N^2)
 void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph)
 {
 	int tspDimension = getDimensionFromTSP(tsp);
@@ -264,6 +269,7 @@ void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph)
 	}
 }
 
+// O(N)
 void writeMSTFile(char *fileSteam, Graph mst)
 {
 	char fileName[MAX_LINE_LENGTH] = "./output/";

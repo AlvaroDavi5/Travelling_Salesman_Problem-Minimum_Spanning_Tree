@@ -52,7 +52,7 @@ First Assignment for the discipline of ```Técnicas de Busca e Ordenação (Sear
     - [x] Imprimir Tour em arquivo '.tour'
     - [x] Refatorar e remover passos desnecessários (acessos e alocações)
 - [ ] Relatório
-  - [ ] Documentar complexidade dos algoritmos usados (_Big O, Big Omega, Big Theta_)
+  - [x] Documentar complexidade dos algoritmos usados (_Big O_)
   - [ ] Documentar análise empírica com base no tempo de execução para cada etapa
     - [ ] TSP
       - [ ] Leitura da entrada
