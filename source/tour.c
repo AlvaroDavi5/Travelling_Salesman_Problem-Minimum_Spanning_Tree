@@ -2,10 +2,9 @@
 
 struct tour_struct
 {
-	int verticesAmount, edgesAmount;
-	float minCost;
-	Edge *edgesArray;
-	int lastSettedEdge;
+	int verticesAmount;
+	int *tourArray;
+	int tourIndex;
 };
 
 Tour initTour(int verticesAmount)
@@ -16,119 +15,65 @@ Tour initTour(int verticesAmount)
 		return NULL;
 
 	newTour->verticesAmount = verticesAmount;
-	int edgesAmount = verticesAmount; // E = V
-	newTour->edgesAmount = edgesAmount;
-	newTour->edgesArray = initEdgesArray(edgesAmount);
-	newTour->lastSettedEdge = -1;
-	newTour->minCost = 0;
+	newTour->tourArray = initTourArray(verticesAmount);
+	newTour->tourIndex = 0;
 
 	return newTour;
 }
 
 void destroyTour(Tour tour)
 {
-	destroyEdgesArray(tour->edgesArray, tour->edgesAmount);
+	safeFree(tour->tourArray);
 	safeFree(tour);
 }
 
-void _appendEdgeToTourArray(Tour tour, Edge edge)
+void depthFirstSearch(Tour tour, bool *visitedVerticesArray, Edge *mstEdgesArray, int mstVerticesAmount, int mstEdgesAmount, int vertexIndex)
 {
-	if (!wasAllocated(tour->edgesArray) || tour->lastSettedEdge == (tour->edgesAmount - 1))
-		return;
+	int vertexId = posToId(vertexIndex);
+	tour->tourArray[tour->tourIndex++] = vertexId;
+	visitedVerticesArray[vertexIndex] = true;
 
-	int pos = tour->lastSettedEdge + 1;
-	tour->edgesArray[pos] = edge;
-	tour->lastSettedEdge = pos;
+	for (int i = 0; i < mstVerticesAmount; i++)
+	{
+		if (!visitedVerticesArray[i] && isEdgeInGraph(mstEdgesArray, mstEdgesAmount, vertexId, posToId(i)))
+			depthFirstSearch(tour, visitedVerticesArray, mstEdgesArray, mstVerticesAmount, mstEdgesAmount, i);
+	}
 }
 
-Tour buildTour(Graph graph, Graph mst)
+Tour buildTour(Graph mst)
 {
 	const int mstVerticesAmount = getVerticesAmountFromGraph(mst);
 	Tour newTour = initTour(mstVerticesAmount);
-	int *addedVerticesArray = initVisitedVerticesArray(mstVerticesAmount);
 
-	// add edges from MST (sorted by weight)
 	Edge *mstEdgesArray = getEdgesArrayFromGraph(mst);
-	for (int i = 0; i < getEdgesAmountFromGraph(mst); i++)
-	{
-		Edge currentEdge = *(mstEdgesArray + i);
-		int srcVerticeId = getSourceFromEdge(currentEdge);
-		int destVerticeId = getDestinationFromEdge(currentEdge);
-		bool isInverted = addedVerticesArray[idToPos(destVerticeId)] > addedVerticesArray[idToPos(srcVerticeId)];
+	const int mstEdgesAmount = getEdgesAmountFromGraph(mst);
+	bool visitedVerticesArray[mstVerticesAmount];
+	for (int i = 0; i < mstVerticesAmount; i++)
+		visitedVerticesArray[i] = false;
 
-		if (addedVerticesArray[idToPos(srcVerticeId)] < 2 &&
-				addedVerticesArray[idToPos(destVerticeId)] < 2)
-		{
-			float w = getWeightFromEdge(currentEdge);
+	depthFirstSearch(newTour, visitedVerticesArray, mstEdgesArray, mstVerticesAmount, mstEdgesAmount, 0);
 
-			if (isInverted)
-				_appendEdgeToTourArray(newTour, createEdge(destVerticeId, srcVerticeId, w));
-			else
-				_appendEdgeToTourArray(newTour, createEdge(srcVerticeId, destVerticeId, w));
-			newTour->minCost += w;
-
-			addedVerticesArray[idToPos(srcVerticeId)] += 1;
-			addedVerticesArray[idToPos(destVerticeId)] += 1;
-		}
-	}
-
-	// add edges from General Graph (sorted by weight)
-	Edge *generalGraphEdgesArray = getEdgesArrayFromGraph(graph);
-	for (int i = 0; i < getEdgesAmountFromGraph(graph); i++)
-	{
-		Edge currentEdge = *(generalGraphEdgesArray + i);
-		int srcVerticeId = getSourceFromEdge(currentEdge);
-		int destVerticeId = getDestinationFromEdge(currentEdge);
-		bool isInverted = addedVerticesArray[idToPos(destVerticeId)] > addedVerticesArray[idToPos(srcVerticeId)];
-
-		if (addedVerticesArray[idToPos(srcVerticeId)] < 2 &&
-				addedVerticesArray[idToPos(destVerticeId)] < 2)
-		{
-			float w = getWeightFromEdge(currentEdge);
-
-			if (isInverted)
-				_appendEdgeToTourArray(newTour, createEdge(destVerticeId, srcVerticeId, w));
-			else
-				_appendEdgeToTourArray(newTour, createEdge(srcVerticeId, destVerticeId, w));
-			newTour->minCost += w;
-
-			addedVerticesArray[idToPos(srcVerticeId)] += 1;
-			addedVerticesArray[idToPos(destVerticeId)] += 1;
-		}
-	}
-
-	safeFree(addedVerticesArray);
 	return newTour;
 }
 
-int *initVisitedVerticesArray(int verticesAmount)
+int *initTourArray(int verticesAmount)
 {
-	int *newVisitedVerticesArray = (int *)malloc(verticesAmount * sizeof(int));
+	int *newTourArray = (int *)malloc(verticesAmount * sizeof(int));
 
-	if (!wasAllocated(newVisitedVerticesArray))
+	if (!wasAllocated(newTourArray))
 		return NULL;
 
 	for (int i = 0; i < verticesAmount; i++)
 	{
-		*(newVisitedVerticesArray + i) = 0;
+		*(newTourArray + i) = 0;
 	}
 
-	return newVisitedVerticesArray;
+	return newTourArray;
 }
 
 int getVerticesAmountFromTour(Tour tour)
 {
 	return tour->verticesAmount;
-}
-
-int getEdgesAmountFromTour(Tour tour)
-{
-	return tour->edgesAmount;
-}
-
-float getMinCostFromTour(Tour tour)
-{
-	return tour->minCost;
 }
 
 void writeTourFile(char *fileSteam, Tour tour)
@@ -137,18 +82,19 @@ void writeTourFile(char *fileSteam, Tour tour)
 	strcat(fileName, fileSteam);
 	strcat(fileName, ".tour");
 
-	FILE *file = fopen(fileName, "a");
+	FILE *file = fopen(fileName, "w");
 
+	int tourVerticesAmount = getVerticesAmountFromTour(tour);
 	fprintf(file, "NAME: %s\n", fileSteam);
 	fprintf(file, "TYPE: TOUR\n");
-	fprintf(file, "DIMENSION: %d\n", getVerticesAmountFromTour(tour));
+	fprintf(file, "DIMENSION: %d\n", tourVerticesAmount);
 
 	fprintf(file, "TOUR_SECTION\n");
-	Edge *edgesArray = tour->edgesArray;
-	for (int i = 0; i < getEdgesAmountFromTour(tour); i++)
+	int *tourArray = tour->tourArray;
+	for (int i = 0; i < tourVerticesAmount; i++)
 	{
-		Edge currentEdge = *(edgesArray + i);
-		fprintf(file, "%d\n", getDestinationFromEdge(currentEdge));
+		int currentVertice = *(tourArray + i);
+		fprintf(file, "%d\n", currentVertice);
 	}
 	fprintf(file, "EOF\n");
 

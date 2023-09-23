@@ -204,6 +204,22 @@ Edge *getEdgesArrayFromGraph(Graph graph)
 	return graph->edgesArray;
 }
 
+bool isEdgeInGraph(Edge *edgesArray, int edgesAmount, int v1, int v2)
+{
+	for (int i = 0; i < edgesAmount; i++)
+	{
+		Edge currentEdge = edgesArray[i];
+		int srcVertexId = currentEdge->source;
+		int destVertexId = currentEdge->destination;
+
+		if ((srcVertexId == v1 && destVertexId == v2) ||
+				(srcVertexId == v2 && destVertexId == v1))
+			return true;
+	}
+
+	return false;
+}
+
 void destroyEdgesArray(Edge *array, size_t n)
 {
 	if (wasAllocated(array))
@@ -254,7 +270,7 @@ void writeMSTFile(char *fileSteam, Graph mst)
 	strcat(fileName, fileSteam);
 	strcat(fileName, ".mst");
 
-	FILE *file = fopen(fileName, "a");
+	FILE *file = fopen(fileName, "w");
 
 	fprintf(file, "NAME: %s\n", fileSteam);
 	fprintf(file, "TYPE: MST\n");

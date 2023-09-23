@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdbool.h>
 #include <math.h>
 #include <time.h>
 #include "./tsp.h"
@@ -39,6 +40,7 @@ int getDestinationFromEdge(Edge edge);
 float getWeightFromEdge(Edge edge);
 Edge *initEdgesArray(int edgesAmount);
 Edge *getEdgesArrayFromGraph(Graph graph);
+bool isEdgeInGraph(Edge *edgesArray, int edgesAmount, int v1, int v2);
 void destroyEdgesArray(Edge *array, size_t n);
 void calculateDistanceBetweenCities(TravellingSalesmanProblem tsp, Graph graph);
 void writeMSTFile(char *fileSteam, Graph mst);
